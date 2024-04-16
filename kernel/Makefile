@@ -1,9 +1,3 @@
--include .config
-
-ifdef (CONFIG_ARCH_X86)
-	@echo "Compiling for x86"
-endif
-
 # stuff
 objout = Image
 iso_objout = myos.iso
