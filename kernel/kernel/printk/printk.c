@@ -3,6 +3,11 @@
 #include <lunaris/video.h>
 #include <common.h>
 
+static void __kmsg_append()
+{
+
+}
+
 ssize_t printk(const char fmt[], ...)
 {
   va_list arg;

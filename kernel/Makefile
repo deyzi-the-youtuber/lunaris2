@@ -1,3 +1,9 @@
+-include .config
+
+ifdef (CONFIG_ARCH_X86)
+	@echo "Compiling for x86"
+endif
+
 # stuff
 objout = Image
 iso_objout = myos.iso
@@ -19,7 +25,7 @@ asm_src := $(shell find . -type f -name "*.S")
 c_obj := $(patsubst %.c, %.o, $(c_src))
 asm_obj := $(patsubst %.S, %.o, $(asm_src))
 
-all: $(objout)
+all: $(shell python $(scripts_dir)/gen-config.py) $(objout)
 
 $(objout): $(asm_obj) $(c_obj)
 	@echo "LD   $^"
@@ -42,4 +48,4 @@ iso:
 	@grub-mkrescue isodir -o $(iso_objout) -d /usr/lib/grub/i386-pc
 
 qemu:
-	@qemu-system-x86_64 -d int -hda $(iso_objout) -m 2G -serial stdio
+	@qemu-system-x86_64 -hda $(iso_objout) -m 256M -serial stdio

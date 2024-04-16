@@ -1,0 +1,76 @@
+section .text
+  extern isr_stage2_handler
+  %include "arch/x86/asm/cpu.inc"
+
+isr_stage1_handler:
+  pusha
+  mov ax, ds
+  push eax
+
+  mov ax, 0x10
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+
+  push esp
+  call isr_stage2_handler
+  pop esp
+
+  pop eax
+  mov ds, ax
+  mov es, ax
+  mov fs, ax
+  mov gs, ax
+
+  popa
+  add esp, 0x8
+
+  sti
+  iret
+
+
+DEFINE_ISR 0, 1
+DEFINE_ISR 1, 1
+DEFINE_ISR 2, 1
+DEFINE_ISR 3, 1
+DEFINE_ISR 4, 1
+DEFINE_ISR 5, 1
+DEFINE_ISR 6, 1
+DEFINE_ISR 7, 1
+DEFINE_ISR 8, 0
+DEFINE_ISR 9, 1
+DEFINE_ISR 10, 0
+DEFINE_ISR 11, 0
+DEFINE_ISR 12, 0
+DEFINE_ISR 13, 0
+DEFINE_ISR 14, 0
+DEFINE_ISR 15, 1
+DEFINE_ISR 16, 1
+DEFINE_ISR 17, 0
+DEFINE_ISR 18, 1
+DEFINE_ISR 19, 1
+DEFINE_ISR 20, 1
+DEFINE_ISR 21, 0
+DEFINE_ISR 22, 1
+DEFINE_ISR 23, 1
+DEFINE_ISR 24, 1
+DEFINE_ISR 25, 1
+DEFINE_ISR 26, 1
+DEFINE_ISR 27, 1
+DEFINE_ISR 28, 1
+DEFINE_ISR 29, 0
+DEFINE_ISR 30, 0
+DEFINE_ISR 31, 1
+DEFINE_ISR 32, 1
+DEFINE_ISR 33, 1
+DEFINE_ISR 34, 1
+DEFINE_ISR 35, 1
+DEFINE_ISR 36, 1
+DEFINE_ISR 37, 1
+DEFINE_ISR 38, 1
+DEFINE_ISR 39, 1
+DEFINE_ISR 40, 1
+DEFINE_ISR 41, 1
+DEFINE_ISR 42, 1
+DEFINE_ISR 128, 1

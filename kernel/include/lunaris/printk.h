@@ -1,7 +1,7 @@
-#include <sys/types.h>
-
 #ifndef __PRINTK_H
 #define __PRINTK_H
+
+#include <sys/types.h>
 
 #define KERN_INFO "\033[39m"
 #define KERN_WARN "\033[33m"

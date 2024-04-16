@@ -1,10 +1,11 @@
 #include <lunaris/printk.h>
+#include <arch/x86.h>
 #include <common.h>
 #include <stdarg.h>
 
 static void die()
 {
-  asm volatile("cli");
+  interrupts_disable();
   asm volatile("hlt");
 }
 

@@ -1,8 +1,8 @@
-#include <sys/types.h>
-#include <stdarg.h>
-
 #ifndef __COMMON_H
 #define __COMMON_H
+
+#include <sys/types.h>
+#include <stdarg.h>
 
 #ifndef NULL
 #define NULL ((void *)0)

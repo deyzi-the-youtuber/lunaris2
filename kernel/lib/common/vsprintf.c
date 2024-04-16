@@ -6,7 +6,7 @@
 
 ssize_t vsprintf(const char fmt[], va_list arg)
 {
-  size_t width;
+  size_t width = 0;
   size_t ret = 0;
   for(int i = 0; fmt[i]; i++)
   {

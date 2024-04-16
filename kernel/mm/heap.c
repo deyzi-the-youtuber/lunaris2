@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <common.h>
 
-MODULE_NAME("Kheap");
+MODULE_NAME("kheap");
 
 struct kheap_metadata
 {
@@ -78,7 +78,6 @@ static void * __heap_get_free(ssize_t size)
     }
     if(block->metadata.used)
     {
-      //printm("Block info: Used: %s, Size: %d bytes\n", block->metadata.used ? "True" : "False", block->metadata.size);
       mem += block->metadata.size;
       mem += sizeof(struct kheap_block);
     }
@@ -121,7 +120,7 @@ void * kmalloc(ssize_t size)
   b->metadata.size = size;
   b->metadata.used = true;
   printm("Allocated %d bytes\n", b->metadata.size);
-  memset((void *)(b + sizeof(struct kheap_block)), 0, size);
+  memset((void *)((uint32_t)b + sizeof(struct kheap_block)), 0, size);
   return (void *)((uint32_t)b + sizeof(struct kheap_block));
 }
 

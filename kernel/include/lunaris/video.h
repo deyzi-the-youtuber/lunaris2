@@ -1,8 +1,8 @@
-#include <sys/types.h>
-#include <multiboot2.h>
-
 #ifndef __VIDEO_H
 #define __VIDEO_H
+
+#include <sys/types.h>
+#include <multiboot2.h>
 
 struct video_driver_ops
 {
