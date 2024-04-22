@@ -1,8 +1,9 @@
 #include <arch.h>
 #include <arch/x86.h>
 #include <stdint.h>
-#include "isr.h"
 #include <sys/io.h>
+
+#include "isr.h"
 
 static void __x86_arch_init();
 static void __x86_gdt_init();
@@ -20,6 +21,7 @@ static void __x86_arch_init()
 {
   __x86_gdt_init();
   __x86_idt_init();
+  pit_init();
 }
 
 // gdt
@@ -52,7 +54,8 @@ struct gdtr
   ((base >> 24) & 0xff)
 
 
-struct segm_descriptor gdt[] = {
+struct segm_descriptor gdt[8] =
+{
   // null segment descriptor
   DEFINE_SEGM_DESC(0, 0, 0, 0),
   // kernel code segment descriptor (32-bit)
@@ -66,7 +69,7 @@ struct segm_descriptor gdt[] = {
 };
 
 struct gdtr _gdtr = {
-  .limit  = sizeof(gdt) - 1,
+  .limit  = sizeof(gdt),
   .addr   = (uintptr_t)&gdt
 };
 
@@ -94,8 +97,9 @@ struct idtr
 
 struct idt_vector idt[256];
 
-struct idtr _idtr = {
-  .limit = sizeof(idt) - 1,
+struct idtr _idtr =
+{
+  .limit = sizeof(idt),
   .addr = (uintptr_t)&idt
 };
 
@@ -110,7 +114,8 @@ static void __x86_define_idt_vector(int vector, uintptr_t base, uint8_t flags)
   idt[vector].base_high = (base >> 16) & 0xffff;
 }
 
-static uintptr_t isr_entries[43] = {
+static uintptr_t isr_entries[48] =
+{
   (uintptr_t)isr_entry_0,
   (uintptr_t)isr_entry_1,
   (uintptr_t)isr_entry_2,
@@ -153,19 +158,24 @@ static uintptr_t isr_entries[43] = {
   (uintptr_t)isr_entry_39,
   (uintptr_t)isr_entry_40,
   (uintptr_t)isr_entry_41,
-  (uintptr_t)isr_entry_42
+  (uintptr_t)isr_entry_42,
+  (uintptr_t)isr_entry_43,
+  (uintptr_t)isr_entry_44,
+  (uintptr_t)isr_entry_45,
+  (uintptr_t)isr_entry_46,
+  (uintptr_t)isr_entry_47
 };
 
 static void __x86_idt_init(void)
 {
-  __x86_pic_remap(0x20, 0x28);
-  for(int i = 0; i < 42; i++)
+  for(int i = 0; i < 48; i++)
   {
     // all of these are interrupts
     // no traps
     __x86_define_idt_vector(i, isr_entries[i], 0x8e);
   }
   __x86_define_idt_vector(0x80, (uintptr_t)isr_entry_128, 0x8e);
+  __x86_pic_remap(0x20, 0x28);
   cpu_flush_idt((uintptr_t)&_idtr);
 }
 

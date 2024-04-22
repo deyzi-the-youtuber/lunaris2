@@ -2,13 +2,18 @@
 #include <multiboot2.h>
 #include <stdint.h>
 #include <common.h>
+#include <config.h>
 
 struct video_driver * driver = {0};
 extern struct video_driver * __fb_init(struct multiboot_header_tag * tag, uintptr_t addr);
+extern struct video_driver * __vga_generic_init(void);
 
 static struct video_driver * __video_init(struct multiboot_header_tag * tag, uintptr_t addr)
 {
   // use default video thing
+  #ifndef CONFIG_FB
+  return __vga_generic_init();
+  #endif
   return __fb_init(tag, addr);
 }
 

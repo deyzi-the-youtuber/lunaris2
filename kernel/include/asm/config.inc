@@ -1,0 +1,2 @@
+CONFIG_ARCH_X86 equ 1
+CONFIG_FB equ 0

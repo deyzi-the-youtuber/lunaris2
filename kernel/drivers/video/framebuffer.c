@@ -8,7 +8,8 @@
 void __fb_write(const char fmt[], ssize_t sz);
 int __fb_remap();
 
-struct video_driver_ops fb_ops = {
+static struct video_driver_ops fb_ops =
+{
   .write = __fb_write,
   .remap = __fb_remap
 };
@@ -20,7 +21,7 @@ static void __fb_putpx(int x, int y, int r, int g, int b)
   uint8_t * buf = (uint8_t *)fb.fb_addr;
   uint32_t offset =
       (x + y * fb.width) *
-      4;
+      (fb.bpp / 8);
 
   buf[offset] = b;
   buf[offset + 1] = g;
@@ -138,5 +139,5 @@ int __fb_remap(int x, int y)
 {
   fb.x = x;
   fb.y = y;
-  return x | y;
+  return 0;
 }

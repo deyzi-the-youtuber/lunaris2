@@ -1,3 +1,6 @@
+section .text
+  %include "include/asm/config.inc"
+
 multiboot_header:
   align 8
   ; Header magic
@@ -8,6 +11,7 @@ multiboot_header:
   dd multiboot_header_end - multiboot_header
   ; Header checksum
   dd -(0xe85250d6 + 0x0 + (multiboot_header_end - multiboot_header))
+%if CONFIG_FB == 1
 multiboot_fb_tag_start:
   dw 5
   dw 1
@@ -16,6 +20,7 @@ multiboot_fb_tag_start:
   dd 600
   dd 32
 multiboot_fb_tag_end:
+%endif
 multiboot_header_tag_end:
   dw 0
   dw 0

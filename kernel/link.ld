@@ -2,7 +2,7 @@ ENTRY(_kentry)
 
 SECTIONS
 {
-  . = 1M;
+  . = 2M;
   kernel_start = .;
 	.text BLOCK(4K) : ALIGN(4K)
 	{

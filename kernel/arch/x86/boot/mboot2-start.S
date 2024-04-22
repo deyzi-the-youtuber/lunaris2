@@ -5,6 +5,7 @@ section .text
 %define STACK_SIZE 0x400
 
 _kentry:
+  cli
   mov esp, stack_top
   push 0
   popfd
@@ -14,8 +15,7 @@ _kentry:
   push ebx
   call kernel_main
 .halt:
-  cli
-  hlt
+  jmp .halt
 
 section .bss
 stack_bottom: 

@@ -14,13 +14,15 @@ struct kheap_metadata
 
 struct kheap_block
 {
-  //uint32_t magic;
+  uint32_t magic;
   struct kheap_metadata metadata;
 };
 
 // The kernel heap can be increased up to 8 MB using kbrk.
 // Much of the space after 0x500000 is reserved for this purpose.
 #define KERNEL_HEAP_MAXIMUM 0x800000
+// Used for verification
+#define KERNEL_HEAP_MAGIC   0xdeadbeef
 
 uint32_t kheap_start = 0, kheap_end = 0, kheap_used = 0;
 uint32_t prev_alloc = 0;
@@ -30,7 +32,7 @@ void kheap_init(uint32_t * start)
   kheap_start = (uint32_t)start;
   prev_alloc = kheap_start;
   kheap_end = 0x500000;
-  printm("kernel heap starts at 0x%x\n", kheap_start);
+  //printm("kernel heap starts at 0x%x\n", kheap_start);
   // clear all memory in the kernel heap range
   memset((void *)kheap_start, 0, KERNEL_HEAP_MAXIMUM - kheap_start);
 }
@@ -65,7 +67,6 @@ static void * __heap_get_free(ssize_t size)
   while((uint32_t)mem < prev_alloc)
   {
     block = (struct kheap_block *)mem;
-    // free blocks usually dont have a size
     if(!block->metadata.size)
     {
       return mem;
@@ -117,9 +118,10 @@ void * kmalloc(ssize_t size)
   kheap_used += size;
   kheap_used += sizeof(struct kheap_block);
   // update header
+  b->magic = KERNEL_HEAP_MAGIC;
   b->metadata.size = size;
   b->metadata.used = true;
-  printm("Allocated %d bytes\n", b->metadata.size);
+  //printm("Allocated %d bytes\n", b->metadata.size);
   memset((void *)((uint32_t)b + sizeof(struct kheap_block)), 0, size);
   return (void *)((uint32_t)b + sizeof(struct kheap_block));
 }
@@ -128,10 +130,15 @@ void kfree(void * ptr)
 {
   if(!ptr)
   {
-    printm("WARNING: Freeing a null pointer.\n");
+    printm("WARNING: Freeing a null pointer\n");
     return;
   }
   struct kheap_block * b = (struct kheap_block *)(ptr - sizeof(struct kheap_block));
+  if(b->magic != KERNEL_HEAP_MAGIC)
+  {
+    printm("WARNING: Block header is corrupted\n", b->magic);
+    return;
+  }
   if(!b->metadata.used)
     return;
   ssize_t size = b->metadata.size;
@@ -139,5 +146,5 @@ void kfree(void * ptr)
   kheap_used -= b->metadata.size;
   kheap_used -= sizeof(struct kheap_block);
   b->metadata.used = false;
-  printm("Freed %d bytes from heap\n", b->metadata.size);
+  //printm("Freed %d bytes from heap\n", b->metadata.size);
 }

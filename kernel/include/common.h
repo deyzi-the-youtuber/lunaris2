@@ -25,6 +25,7 @@ void * memset(void * dest, char val, size_t count);
 void * memcpy(void * dest, const void * src, size_t count);
 void * memmove(void * dest, const void * src, size_t n);
 // printing stuff
-ssize_t vsprintf(const char fmt[], va_list arg);
+ssize_t vprintf(const char fmt[], va_list arg);
+char * vasprintf(const char fmt[], va_list ap);
 
 #endif

@@ -13,7 +13,7 @@ void panic(const char fmt[], ...)
 {
   va_list ap;
   va_start(ap, fmt);
-  vsprintf(strcat("Kernel panic: ", fmt), ap);
+  vprintf(strcat("panic: ", fmt), ap);
   va_end(ap);
   die();
   __builtin_unreachable();

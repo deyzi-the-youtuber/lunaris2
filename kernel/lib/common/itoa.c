@@ -1,36 +1,29 @@
 #include <common.h>
 
-char * itoa(int num, char * str, int base)
+char * itoa(int value, char * str, int radix)
 {
-  int i = 0;
-  int neg = 0;
-
-  if (num == 0)
+  int temp = value;
+  char * rc;
+  char * ptr;
+  char * low;
+  if (radix < 2 || radix > 36)
   {
-    str[i++] = '0';
-    str[i] = '\0';
+    *str = '\0';
     return str;
   }
-
-  if (num < 0 && base == 10)
+  rc = ptr = str;
+  low = ptr;
+  do
   {
-    neg = 1;
-    num = -num;
-  }
+    *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz"[35 + value % radix];
+    value /= radix;
+  }while (value);
 
-  while (num != 0)
+  if (temp < 0 && radix == 10)
   {
-    int rem = num % base;
-    str[i++] = (rem > 9) ? (rem - 10) + 'a' : rem + '0';
-    num = num / base;
+    *ptr++ = '-';
   }
- 
-  if (neg)
-    str[i++] = '-';
- 
-  str[i] = '\0';
-
-  reverse(str, i);
- 
-  return str;
+  *ptr-- = '\0';
+	reverse(rc, strlen(rc));
+  return rc;
 }

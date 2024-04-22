@@ -44,14 +44,11 @@ extern void isr_entry_39();
 extern void isr_entry_40();
 extern void isr_entry_41();
 extern void isr_entry_42();
+extern void isr_entry_43();
+extern void isr_entry_44();
+extern void isr_entry_45();
+extern void isr_entry_46();
+extern void isr_entry_47();
 extern void isr_entry_128();
-
-struct interrupt_frame
-{
-  uint32_t ds;
-  uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax; 
-  uint32_t intr, err;
-  uint32_t eip, cs, eflags, useresp, ss;
-};
 
 #endif
